@@ -1,0 +1,18 @@
+[project]
+name = "expense-bot"
+version = "0.1.0"
+description = "A personal Telegram bot for logging expenses and getting spending summaries and advice."
+authors = [
+    {name = "Daniel Asenso-Gyambibi", email = "168206818+DanielAsenso-G@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "expense_bot", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

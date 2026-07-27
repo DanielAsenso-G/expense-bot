@@ -1,0 +1,12 @@
+# Secrets — never commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Poetry virtualenv (if created in-project)
+.venv/
+
+# macOS
+.DS_Store
