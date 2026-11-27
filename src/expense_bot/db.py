@@ -31,3 +31,12 @@ def add_expense(amount, category, note=None):
 
     conn.commit()
     conn.close()
+
+def get_expenses():
+    conn = get_connection()
+    cursor = conn.execute(
+        "SELECT * FROM expenses ORDER BY created_at DESC"
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
