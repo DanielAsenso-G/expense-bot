@@ -10,12 +10,29 @@ The bot distinguishes logging from asking: a logged expense gets a short acknowl
 
 ## How it works
 
-```
-You text the bot → Telegram → webhook → FastAPI
-→ classify intent (log or ask)
-   • log  → parse the expense with Gemini → store in SQLite → confirmation
-   • ask  → read expenses from SQLite → Gemini answers from the data
-→ reply sent back via the Telegram API
+```mermaid
+flowchart TD
+    User(["You"]) -->|message| TCI["Telegram app"]
+    TCI --> TG["Telegram servers"]
+    TG -->|"webhook POST"| WH
+
+    subgraph App["Your FastAPI server (expense-bot)"]
+        WH["Webhook: verify secret"] --> C{"log or ask?"}
+        C -->|log| P["parse_expense"]
+        P --> A["add_expense"]
+        A --> DB[("SQLite")]
+        C -->|ask| R["get_expenses"]
+        DB --> R
+        R --> Ans["answer_question"]
+        A --> Rep["send reply"]
+        Ans --> Rep
+    end
+
+    P -.->|"parse via LLM"| G["Gemini API"]
+    Ans -.->|"answer via LLM"| G
+    Rep -->|"sendMessage"| TG
+    TG -->|reply| TCI
+    TCI --> User
 ```
 
 Stack: Python, FastAPI (the webhook server), SQLite (storage), Google Gemini (parsing messages and answering questions). Incoming webhook requests are verified with a Telegram secret token.
