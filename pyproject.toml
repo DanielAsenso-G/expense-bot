@@ -21,3 +21,8 @@ packages = [{include = "expense_bot", from = "src"}]
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "mkdocs-material (>=9.8.2,<10.0.0)"
+]

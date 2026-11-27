@@ -1,0 +1,9 @@
+# LLMs
+
+The LLM is the part that makes the bot feel smart — it turns "spent 36 at akornor on rice and stew" into neat fields, and it answers questions in plain English. Using it was simpler than I expected: you create a client once, then hand it a model name and a prompt. The surprising part was that each call is completely **stateless** — the model remembers nothing between calls. What feels like memory in a chatbot is an illusion created by resending the whole conversation every time (even talking to Claude works that way).
+
+The thing that tripped me up most wasn't the model, it was JSON. I kept thinking JSON and a Python dictionary were the same thing — they look identical. They're not: JSON is *text*, a dict is a live object in memory. Since you can only send text over a network, Gemini hands back JSON text, and I parse it into a dict with `json.loads`. To stop the model wrapping its reply in stray formatting, I ask for JSON explicitly, which guarantees something I can actually parse.
+
+A principle I'll keep: match the tool to the job. The LLM is great at language — reading messy human text, writing a friendly summary — but I don't trust it to do arithmetic. Numbers should come from the database, which actually computes them; the model's job is to phrase the answer, not add things up.
+
+Routing is where log and ask come together. Each message first goes to the model with one question — is this *logging* an expense or *asking* about spending? — and the answer decides the path. I learned to make that check forgiving: if the reply is anything other than a clean "ask", I treat it as a log, so an odd response never leaves the user with silence. On the ask side, I feed the stored expenses and the question to the model with no JSON constraint this time, because now I want natural language back, not structured data.
